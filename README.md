@@ -196,5 +196,7 @@ The repository contains:
 
 ## Notes
 
-This repository is research code rather than a general-purpose tracking library. It may not be easy to use. I have tried to add all necessary instructions but some info or even files may be missing for a proper run.
+This repository is research code rather than a general-purpose tracking library. It may not be easy to use. 
+While usage instructions have been included i do not know if all necessary files to run have been uploaded (namely ByteTrack files) as this is mostly for demonstration
+(A proper test and run build will be uploaded soon)
 All outputs are saved into .txt and .txt processing code is not included here
