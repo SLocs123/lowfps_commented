@@ -169,6 +169,7 @@ The main run command is
 python main.py
 ```
 Before running for must set the following (This should be in a config file somewhere but i have not implemented that yet)
+* Define you input video path in main.py line 25
 * Output paths in config.py (and disable the initial flag to confirm)
 * Set test name in main.py
 * Define detection zone in detector.py, line 135 (This is a filter, all detection that intesect this area by any amount are passed to tracker, [Shapely polygon](https://shapely.readthedocs.io/en/stable/reference/shapely.Polygon.html))
