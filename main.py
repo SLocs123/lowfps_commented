@@ -22,7 +22,7 @@ from detector import YoloDetector
 from test_paths import build_test_paths, ensure_parent_dirs, get_path
 
 TEST_NAME = "demo_count"
-VIDEO_PATH = "/data/sam/lowfps/TLC00003_2025_demo_blurred.mp4"
+VIDEO_PATH = "/path/to/your/video.mp4" 
 
 
 def format_track_row(frame_number: int, track) -> str:
