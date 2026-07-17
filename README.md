@@ -166,3 +166,13 @@ The repository contains:
 * custom pipeline code;
 * a custom YOLO detector wrapper;
 * custom low-FPS tracking metrics.
+
+## Notes
+
+This repository is research code rather than a general-purpose tracking library. It may not be easy to use.
+All outputs are saved into .txt and .txt processing code is not included here
+I have not included the instructions for applying this code to a custom video, and therefore it will not work propoerly, if you intended to do this you will need to change the line and area codes for both detection and track output see:
+byte_tracker.py, lines 436, 464
+direction_lines.py, lines 8,9
+detector.py, lines 135
+
