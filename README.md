@@ -63,6 +63,7 @@ source .venv/bin/activate
 poetry run python main.py
 ```
 Finally, FastReID will require a .pth weights file for the embedding code to work
+
 see [FastReID model zoo](https://github.com/JDAI-CV/fast-reid/blob/master/MODEL_ZOO.md) for a list of pretrained weigths
 
 ## PyTorch and CUDA
