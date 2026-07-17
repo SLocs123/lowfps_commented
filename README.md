@@ -162,6 +162,19 @@ This file contains custom metrics designed for the 1 FPS application.
 
 These metrics are intended to expose tracking behaviour that is particularly relevant when there are large spatial and temporal gaps between observations.
 
+## Usage
+
+The main run command is 
+```bash
+python main.py
+```
+Before running for must set the following (This should be in a config file somewhere but i have not implemented that yet)
+* output paths in config.py (and disable the initial flag to confirm)
+* Define detection zone in detector.py, line 135 (This is a filter, all detection that intesect this area by any amount are passed to tracker, [Shapely polygon](https://shapely.readthedocs.io/en/stable/reference/shapely.Polygon.html))
+* Define your road lines in direction_lines.py, lines 8,9 (These need to come from the video, manually pick a car and get its x,y centre coordinate for each frame it is in the video, repeat for each lane)
+* Define you counting line (The line that tells the tracker to ouput tracks that cross it, outputs tracks whose history line intesect this line. Should be 2 points for a straight line but can be more see [shapely linestring](https://shapely.readthedocs.io/en/stable/reference/shapely.LineString.html))
+* Define you counting area (Area that tells the tracker to pass any track that intersects with this area to output, [Shapely polygon](https://shapely.readthedocs.io/en/stable/reference/shapely.Polygon.html))
+
 ## Code sources
 
 The repository contains:
