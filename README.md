@@ -169,11 +169,18 @@ The main run command is
 python main.py
 ```
 Before running for must set the following (This should be in a config file somewhere but i have not implemented that yet)
-* output paths in config.py (and disable the initial flag to confirm)
+* Output paths in config.py (and disable the initial flag to confirm)
+* Set test name in main.py
 * Define detection zone in detector.py, line 135 (This is a filter, all detection that intesect this area by any amount are passed to tracker, [Shapely polygon](https://shapely.readthedocs.io/en/stable/reference/shapely.Polygon.html))
 * Define your road lines in direction_lines.py, lines 8,9 (These need to come from the video, manually pick a car and get its x,y centre coordinate for each frame it is in the video, repeat for each lane)
 * Define you counting line (The line that tells the tracker to ouput tracks that cross it, outputs tracks whose history line intesect this line. Should be 2 points for a straight line but can be more see [shapely linestring](https://shapely.readthedocs.io/en/stable/reference/shapely.LineString.html))
 * Define you counting area (Area that tells the tracker to pass any track that intersects with this area to output, [Shapely polygon](https://shapely.readthedocs.io/en/stable/reference/shapely.Polygon.html))
+
+Once run is complete you can call:
+```bash
+python count_track_labels_directions.py
+```
+This will count all unique labels in the output .txt file, ensure you set your test name correctly on line 64 (output paths will be found from the config and test_name variable).
 
 ## Code sources
 
@@ -188,10 +195,5 @@ The repository contains:
 
 ## Notes
 
-This repository is research code rather than a general-purpose tracking library. It may not be easy to use.
+This repository is research code rather than a general-purpose tracking library. It may not be easy to use. I have tried to add all necessary instructions but some info or even files may be missing for a proper run.
 All outputs are saved into .txt and .txt processing code is not included here
-I have not included the instructions for applying this code to a custom video, and therefore it will not work propoerly, if you intended to do this you will need to change the line and area codes for both detection and track output see:
-byte_tracker.py, lines 436, 464
-direction_lines.py, lines 8,9
-detector.py, lines 135
-
