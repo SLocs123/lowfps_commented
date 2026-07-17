@@ -2,62 +2,110 @@
 
 Multi-object tracking (MOT) detects objects in video and attempts to preserve a consistent identity for each object across frames.
 
-Tracking at 1 FPS is difficult because objects can travel a large distance, change appearance, overlap, or leave the scene between consecutive frames.
+Tracking at 1 FPS is difficult because objects can move a large distance, change appearance, overlap, or leave the scene between consecutive frames.
 
-This repository tests a tracking pipeline designed to operate directly on 1 FPS traffic-camera video.
+This repository contains a tracking pipeline designed to operate directly on 1 FPS traffic-camera video.
 
 ## Installation
 
-The project requires Python 3.11 or 3.12.
+The project uses Poetry for dependency management and requires Python 3.11 or Python 3.12.
 
-Create and activate a virtual environment:
+Poetry installation documentation:
+
+* [Poetry installation guide](https://python-poetry.org/docs/#installation)
+* [Poetry documentation](https://python-poetry.org/docs/)
+
+Install Poetry using the official installer:
 
 ```bash
-python -m venv .venv
+curl -sSL https://install.python-poetry.org | python3 -
+```
+
+Make Poetry available in the current terminal:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+Confirm that it is installed:
+
+```bash
+poetry --version
+```
+
+Clone the repository and enter it:
+
+```bash
+git clone https://github.com/SLocs123/lowfps_commented.git
+cd lowfps_commented
+```
+
+Configure Poetry to create the virtual environment inside the repository, if you want a .venv style:
+
+```bash
+poetry config virtualenvs.in-project true --local
+```
+
+Select Python 3.11:
+
+```bash
+poetry env use python3.11
+```
+
+Install the dependencies from `pyproject.toml`:
+(see PyTorch and CUDA before running)
+```bash
+poetry install
+```
+Activate or just run through poetry:
+```bash
 source .venv/bin/activate
-python -m pip install --upgrade pip
+poetry run python main.py
 ```
 
-Install the project dependencies from `pyproject.toml`:
+## PyTorch and CUDA
 
-```bash
-pip install .
-```
-
-PyTorch should be installed using a build compatible with your NVIDIA driver.
-
-First check the installed driver:
+PyTorch must be installed from a package source that provides a build compatible with the required CUDA version.
+Check the installed NVIDIA driver and supported CUDA version:
 
 ```bash
 nvidia-smi
 ```
 
-Then use the official PyTorch installation selector and choose:
+The CUDA version shown by `nvidia-smi` represents the newest CUDA runtime supported by the installed NVIDIA driver. It does not mean that the full CUDA toolkit is installed.
+
+The official PyTorch installation selector can be used to determine the appropriate PyTorch build:
+
+[PyTorch installation selector](https://pytorch.org/get-started/locally/)
+
+Select:
 
 * Linux
 * Pip
 * Python
-* A CUDA version supported by your NVIDIA driver
+* A CUDA version supported by the NVIDIA driver
 
-Run the generated command inside the activated virtual environment.
+The current `pyproject.toml` uses the CUDA 12.8 PyTorch package source:
 
-For example, a CUDA 12.8 installation may use:
-
-```bash
-pip install torch torchvision torchaudio \
-    --index-url https://download.pytorch.org/whl/cu128
+```toml
+[[tool.poetry.source]]
+name = "pytorch-gpu"
+url = "https://download.pytorch.org/whl/cu128"
+priority = "explicit"
 ```
 
-Verify that PyTorch can access the GPU:
+If a different CUDA build is required, change the source URL to a supported PyTorch wheel repository and ensure the specified PyTorch versions are available from it. For example:
 
-```bash
-python -c "import torch; print(torch.cuda.is_available()); print(torch.version.cuda)"
+```toml
+url = "https://download.pytorch.org/whl/cu126"
 ```
 
-The first value should normally be:
+Do not choose a CUDA build newer than the installed NVIDIA driver supports. The available builds and installation commands should be checked using the official PyTorch selector.
 
-```text
-True
+Verify the installation after running `poetry install`:
+
+```bash
+poetry run python -c "import torch; print('PyTorch:', torch.__version__); print('CUDA build:', torch.version.cuda); print('CUDA available:', torch.cuda.is_available())"
 ```
 
 ## Code structure
@@ -77,40 +125,44 @@ lowfps_commented/
 
 `main.py` is the main pipeline wrapper.
 
-It reads the video frame by frame, passes each frame through the detector, sends the resulting detections to ByteTrack, and manages the resulting tracked objects and outputs.
+It reads the 1 FPS video frame by frame, sends each frame to the detector, passes the resulting detections to the tracker, and manages the output tracks.
 
-Because the source video is already 1 FPS, the pipeline does not skip or resample frames.
+The video is processed as provided. Frames are not skipped or resampled.
 
 ### `detector.py`
 
-`detector.py` wraps the Ultralytics YOLO detector.
+`detector.py` is a wrapper around the Ultralytics YOLO detector.
 
-It loads the detection model, runs inference on each frame, and converts YOLO predictions into the format expected by the tracker.
+It loads the YOLO model, performs inference on each frame and converts the detections into the format required by the tracking code.
 
 ### `ByteTrack/`
 
-This directory contains the tracking code.
+This directory contains the ByteTrack-based tracking code.
 
-ByteTrack associates detections between frames and assigns a persistent track ID to each object. The implementation also uses appearance information from FastReID to help compare objects across the large time gaps found in 1 FPS video.
+The tracker associates detections between consecutive 1 FPS frames and attempts to assign a consistent track ID to each object.
 
-The FastReID model and supporting files are located under:
+FastReID is used to extract appearance features. These features provide additional information when position and motion alone are insufficient because of the large time gap between frames.
+
+The FastReID integration is located under:
 
 ```text
 ByteTrack/feature_extractor/
 ```
 
-The required `.pth` model weights are not stored in GitHub and must be added separately.
+The required `.pth` model weights are not stored in the repository and must be added separately.
 
 ### `lowfps_metrics/`
 
-This directory contains metrics designed specifically for evaluating the 1 FPS tracking application.
+This directory contains custom metrics designed for the 1 FPS application.
 
-These metrics provide additional information beyond standard MOT scores, with emphasis on failures that become important when there is a large time and movement gap between frames.
+These metrics are intended to expose tracking behaviour that is particularly relevant when there are large spatial and temporal gaps between observations.
 
 ## Code sources
 
 The repository contains:
 
-* ByteTrack tracking code
-* FastReID appearance-extraction code
-* Custom pipeline, detector-wrapper and low-FPS evaluation code
+* adapted ByteTrack tracking code;
+* adapted FastReID appearance-extraction code;
+* custom pipeline code;
+* a custom YOLO detector wrapper;
+* custom low-FPS tracking metrics.
