@@ -114,9 +114,11 @@ poetry run python -c "import torch; print('PyTorch:', torch.__version__); print(
 lowfps_commented/
 ├── main.py
 ├── detector.py
-├── lowfps_metrics/
 ├── ByteTrack/
 │   └── feature_extractor/
+│   └── yolox/tracker/
+│     └── byte_tracker.py
+│     └── lowfps_metrics/
 ├── pyproject.toml
 └── ...
 ```
@@ -151,9 +153,9 @@ ByteTrack/feature_extractor/
 
 The required `.pth` model weights are not stored in the repository and must be added separately.
 
-### `lowfps_metrics/`
+### `lowfps_metrics.py`
 
-This directory contains custom metrics designed for the 1 FPS application.
+This file contains custom metrics designed for the 1 FPS application.
 
 These metrics are intended to expose tracking behaviour that is particularly relevant when there are large spatial and temporal gaps between observations.
 
