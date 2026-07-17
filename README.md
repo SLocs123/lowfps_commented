@@ -166,7 +166,7 @@ These metrics are intended to expose tracking behaviour that is particularly rel
 
 The repository contains:
 
-* adapted ByteTrack tracking code;
+* adapted [ByteTrack](https://github.com/FoundationVision/ByteTrack) tracking code;
 * adapted [FastReID](https://github.com/jdai-cv/fast-Reid) appearance-extraction code;
 ** for fastReID weights, download .pth file from [here](https://github.com/JDAI-CV/fast-reid/blob/master/MODEL_ZOO.md)
 * custom pipeline code;
